@@ -1,10 +1,15 @@
 <script setup>
+import { Head, Link } from '@inertiajs/vue3';
+import { show } from '@/routes/projects';
+
 defineProps({
     projects: Array,
 });
 </script>
 
 <template>
+    <Head title="Projets" />
+
     <h1>Mes projets</h1>
 
     <ul>
@@ -12,7 +17,8 @@ defineProps({
             <img v-if="project.cover_url" :src="project.cover_url" alt="" width="300" />
             <h2>{{ project.title }}</h2>
             <p>{{ project.summary }}</p>
-            <a :href="`/projets/${project.slug}`">Voir le projet</a>
+            <Link :href="show(project)">Voir le projet</Link>
         </li>
     </ul>
 </template>
+

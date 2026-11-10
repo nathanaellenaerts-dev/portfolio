@@ -4,23 +4,26 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
+import PublicLayout from './layouts/PublicLayout.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
-    layout: (name) => {
-        switch (true) {
-            case name === 'Welcome' || name ==="Home":
-                return null;
-            case name.startsWith('auth/'):
-                return AuthLayout;
-            case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
-            default:
-                return AppLayout;
-        }
-    },
+layout: (name) => {
+    switch (true) {
+        case name.startsWith('auth/'):
+            return AuthLayout;
+        case name.startsWith('settings/'):
+            return [AppLayout, SettingsLayout];
+        case name === 'Dashboard' || name.startsWith('admin/'):
+            return AppLayout;
+        default:
+            return PublicLayout;
+    }
+},
+
+
     withApp: (app) => {
         app.directive('focus', {
             mounted: (el: HTMLElement, shouldFocus) => {
@@ -35,8 +38,8 @@ void createInertiaApp({
     },
 });
 
-// This will set light / dark mode on page load...
+
 initializeTheme();
 
-// This will listen for flash toast data from the server...
+
 initializeFlashToast();
