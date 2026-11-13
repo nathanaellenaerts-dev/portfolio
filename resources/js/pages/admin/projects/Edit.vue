@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { edit, index } from "@/routes/admin/projects";
+import RichTextEditor from "@/components/RichTextEditor.vue";
 
 defineOptions({
     layout: {
@@ -33,7 +34,7 @@ const props = defineProps({
 
         <Form
             v-bind="ProjectController.update.form(project)"
-            v-slot="{ errors, processing }"
+            v-slot="{ errors, processing, progress }"
             class="space-y-6"
             novalidate
         >
@@ -74,6 +75,32 @@ const props = defineProps({
                     :default-value="project.repo_url"
                 />
                 <InputError :message="errors.repo_url" />
+            </div>
+
+            <div class="grid gap-2">
+                <img
+                    v-if="project.cover_url"
+                    :src="project.cover_url"
+                    alt=""
+                    class="w-48 rounded"
+                />
+                <RichTextEditor
+                    name="content"
+                    label="Contenu du projet"
+                    :default-value="project.content"
+                />
+
+                <Label for="cover">Image de couverture</Label>
+                <Input id="cover" name="cover" type="file" accept="image/*" />
+                <progress
+                    v-if="progress"
+                    :value="progress.percentage"
+                    max="100"
+                    class="w-full"
+                >
+                    {{ progress.percentage }} %
+                </progress>
+                <InputError :message="errors.cover" />
             </div>
 
             <fieldset class="grid gap-2">

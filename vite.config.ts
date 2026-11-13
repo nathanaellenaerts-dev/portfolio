@@ -11,11 +11,15 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.ts'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
+fonts: [
+    bunny('Instrument Sans', {
+        weights: [400, 500, 600],
+    }),
+    bunny('Space Grotesk', {
+        weights: [500, 700],
+    }),
+],
+
         }),
         inertia(),
         tailwindcss(),

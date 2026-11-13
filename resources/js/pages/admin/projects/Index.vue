@@ -1,10 +1,9 @@
-
 <script setup>
-import { Form, Head, Link, usePage } from '@inertiajs/vue3';
-import { watch } from 'vue';
-import { toast } from 'vue-sonner';
-import ProjectController from '@/actions/App/Http/Controllers/Admin/ProjectController';
-import { Button } from '@/components/ui/button';
+import { Form, Head, Link, usePage } from "@inertiajs/vue3";
+import { watch } from "vue";
+import { toast } from "vue-sonner";
+import ProjectController from "@/actions/App/Http/Controllers/Admin/ProjectController";
+import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -12,7 +11,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
     Dialog,
     DialogClose,
@@ -22,12 +21,13 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import { create, index, edit } from '@/routes/admin/projects';
+} from "@/components/ui/dialog";
+import { create, index, edit } from "@/routes/admin/projects";
+import { Badge } from "@/components/ui/badge";
 
 defineOptions({
     layout: {
-        breadcrumbs: [{ title: 'Projets', href: index() }],
+        breadcrumbs: [{ title: "Projets", href: index() }],
     },
 });
 
@@ -45,7 +45,7 @@ watch(
             toast.success(message);
         }
     },
-    { immediate: true }
+    { immediate: true },
 );
 </script>
 
@@ -66,6 +66,7 @@ watch(
                 <TableRow>
                     <TableHead>Titre</TableHead>
                     <TableHead>Adresse</TableHead>
+                    <TableHead>État</TableHead>
                     <TableHead class="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -76,28 +77,57 @@ watch(
                         {{ project.title }}
                     </TableCell>
 
+                    <TableCell> /projets/{{ project.slug }} </TableCell>
                     <TableCell>
-                        /projets/{{ project.slug }}
+                        <Badge v-if="project.published_at">Publié</Badge>
+                        <Badge v-else variant="secondary">Brouillon</Badge>
                     </TableCell>
 
                     <TableCell>
                         <div class="flex justify-end gap-2">
+                            <Form
+                                v-bind="
+                                    ProjectController.togglePublished.form(
+                                        project,
+                                    )
+                                "
+                                class="inline"
+                            >
+                                <Button
+                                    class="cursor-pointer"
+                                    type="submit"
+                                    variant="outline"
+                                    size="sm"
+                                >
+                                    {{
+                                        project.published_at
+                                            ? "Dépublier"
+                                            : "Publier"
+                                    }}
+                                </Button>
+                            </Form>
                             <Button variant="outline" size="sm" as-child>
-                                <Link :href="edit(project)">
-                                    Modifier
-                                </Link>
+                                <Link :href="edit(project)"> Modifier </Link>
                             </Button>
 
                             <Dialog>
                                 <DialogTrigger as-child>
-                                    <Button variant="destructive" size="sm">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        class="cursor-pointer"
+                                    >
                                         Supprimer
                                     </Button>
                                 </DialogTrigger>
 
                                 <DialogContent>
                                     <Form
-                                        v-bind="ProjectController.destroy.form(project)"
+                                        v-bind="
+                                            ProjectController.destroy.form(
+                                                project,
+                                            )
+                                        "
                                         :options="{
                                             preserveScroll: true,
                                         }"
@@ -106,12 +136,15 @@ watch(
                                     >
                                         <DialogHeader class="space-y-3">
                                             <DialogTitle>
-                                                Êtes-vous sûr de vouloir supprimer ce projet ?
+                                                Êtes-vous sûr de vouloir
+                                                supprimer ce projet ?
                                             </DialogTitle>
 
                                             <DialogDescription>
                                                 Le projet
-                                                <strong>{{ project.title }}</strong>
+                                                <strong>{{
+                                                    project.title
+                                                }}</strong>
                                                 sera définitivement supprimé.
                                                 Cette action est irréversible.
                                             </DialogDescription>

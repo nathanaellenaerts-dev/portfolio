@@ -1,20 +1,21 @@
 <script setup>
-import { Form, Head } from '@inertiajs/vue3';
-import ProjectController from '@/actions/App/Http/Controllers/Admin/ProjectController';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import { Textarea } from '@/components/ui/textarea';
-import { create, index } from '@/routes/admin/projects';
+import { Form, Head } from "@inertiajs/vue3";
+import ProjectController from "@/actions/App/Http/Controllers/Admin/ProjectController";
+import InputError from "@/components/InputError.vue";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { create, index } from "@/routes/admin/projects";
+import RichTextEditor from "@/components/RichTextEditor.vue";
 
 defineOptions({
     layout: {
         breadcrumbs: [
-            { title: 'Projets', href: index() },
-            { title: 'Nouveau projet', href: create() },
+            { title: "Projets", href: index() },
+            { title: "Nouveau projet", href: create() },
         ],
     },
 });
@@ -49,6 +50,12 @@ defineProps({
             </div>
 
             <div class="grid gap-2">
+                <Label>Contenu</Label>
+                <RichTextEditor name="content" label="Contenu du projet" />
+                <InputError :message="errors.content" />
+            </div>
+
+            <div class="grid gap-2">
                 <Label for="demo_url">Lien de la démo</Label>
                 <Input id="demo_url" name="demo_url" type="url" />
                 <InputError :message="errors.demo_url" />
@@ -58,6 +65,20 @@ defineProps({
                 <Label for="repo_url">Lien du code</Label>
                 <Input id="repo_url" name="repo_url" type="url" />
                 <InputError :message="errors.repo_url" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="cover">Image de couverture</Label>
+                <Input id="cover" name="cover" type="file" accept="image/*" />
+                <progress
+                    v-if="progress"
+                    :value="progress.percentage"
+                    max="100"
+                    class="w-full"
+                >
+                    {{ progress.percentage }} %
+                </progress>
+                <InputError :message="errors.cover" />
             </div>
 
             <fieldset class="grid gap-2">
